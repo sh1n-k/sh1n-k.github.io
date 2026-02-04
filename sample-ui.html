@@ -1,0 +1,1009 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>메시지 업체 설정 - 관리자</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+            background-color: #f5f7fa;
+            color: #333;
+            line-height: 1.6;
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 24px;
+        }
+
+        header {
+            background: #fff;
+            border-bottom: 1px solid #e0e0e0;
+            padding: 16px 24px;
+            margin-bottom: 24px;
+        }
+
+        header h1 {
+            font-size: 20px;
+            font-weight: 600;
+            color: #1a1a1a;
+        }
+
+        .breadcrumb {
+            font-size: 14px;
+            color: #666;
+            margin-top: 4px;
+        }
+
+        .breadcrumb a {
+            color: #4a90d9;
+            text-decoration: none;
+        }
+
+        .breadcrumb a:hover {
+            text-decoration: underline;
+        }
+
+        /* 조직 목록 */
+        .org-list-section {
+            background: #fff;
+            border-radius: 8px;
+            box-shadow: 0 1px 3px rgba(0,0,0,0.1);
+            padding: 24px;
+            margin-bottom: 24px;
+        }
+
+        .section-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 20px;
+        }
+
+        .section-title {
+            font-size: 18px;
+            font-weight: 600;
+        }
+
+        .search-box {
+            display: flex;
+            gap: 8px;
+        }
+
+        .search-box input {
+            padding: 8px 12px;
+            border: 1px solid #ddd;
+            border-radius: 4px;
+            width: 280px;
+            font-size: 14px;
+        }
+
+        .search-box input:focus {
+            outline: none;
+            border-color: #4a90d9;
+        }
+
+        .btn {
+            padding: 8px 16px;
+            border: none;
+            border-radius: 4px;
+            font-size: 14px;
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+
+        .btn-primary {
+            background: #4a90d9;
+            color: #fff;
+        }
+
+        .btn-primary:hover {
+            background: #3a7bc8;
+        }
+
+        .btn-primary:disabled {
+            background: #a0c4e8;
+            cursor: not-allowed;
+        }
+
+        .btn-secondary {
+            background: #fff;
+            color: #333;
+            border: 1px solid #ddd;
+        }
+
+        .btn-secondary:hover {
+            background: #f5f5f5;
+        }
+
+        .btn-danger {
+            background: #dc3545;
+            color: #fff;
+        }
+
+        .btn-danger:hover {
+            background: #c82333;
+        }
+
+        .btn-success {
+            background: #28a745;
+            color: #fff;
+        }
+
+        /* 테이블 */
+        table {
+            width: 100%;
+            border-collapse: collapse;
+        }
+
+        th, td {
+            padding: 12px 16px;
+            text-align: left;
+            border-bottom: 1px solid #eee;
+        }
+
+        th {
+            font-weight: 600;
+            color: #666;
+            font-size: 13px;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+
+        tr:hover {
+            background: #f9fafb;
+        }
+
+        .status-badge {
+            display: inline-block;
+            padding: 4px 8px;
+            border-radius: 4px;
+            font-size: 12px;
+            font-weight: 500;
+        }
+
+        .status-configured {
+            background: #d4edda;
+            color: #155724;
+        }
+
+        .status-default {
+            background: #e2e3e5;
+            color: #383d41;
+        }
+
+        .provider-badge {
+            display: inline-block;
+            padding: 4px 8px;
+            border-radius: 4px;
+            font-size: 12px;
+            font-weight: 500;
+        }
+
+        .provider-cloudmsg {
+            background: #cce5ff;
+            color: #004085;
+        }
+
+        .provider-sendtalk {
+            background: #fff3cd;
+            color: #856404;
+        }
+
+        .action-link {
+            color: #4a90d9;
+            text-decoration: none;
+            cursor: pointer;
+        }
+
+        .action-link:hover {
+            text-decoration: underline;
+        }
+
+        /* 설정 폼 */
+        .config-section {
+            background: #fff;
+            border-radius: 8px;
+            box-shadow: 0 1px 3px rgba(0,0,0,0.1);
+            padding: 24px;
+            display: none;
+        }
+
+        .config-section.active {
+            display: block;
+        }
+
+        .org-info {
+            background: #f8f9fa;
+            padding: 16px;
+            border-radius: 4px;
+            margin-bottom: 24px;
+        }
+
+        .org-info h3 {
+            font-size: 16px;
+            margin-bottom: 8px;
+        }
+
+        .org-info p {
+            font-size: 14px;
+            color: #666;
+        }
+
+        .form-group {
+            margin-bottom: 20px;
+        }
+
+        .form-group label {
+            display: block;
+            font-weight: 500;
+            margin-bottom: 8px;
+            font-size: 14px;
+        }
+
+        .form-group label .required {
+            color: #dc3545;
+        }
+
+        .form-control {
+            width: 100%;
+            padding: 10px 12px;
+            border: 1px solid #ddd;
+            border-radius: 4px;
+            font-size: 14px;
+        }
+
+        .form-control:focus {
+            outline: none;
+            border-color: #4a90d9;
+            box-shadow: 0 0 0 3px rgba(74, 144, 217, 0.1);
+        }
+
+        .form-control.error {
+            border-color: #dc3545;
+        }
+
+        .form-hint {
+            font-size: 12px;
+            color: #666;
+            margin-top: 4px;
+        }
+
+        .form-error {
+            font-size: 12px;
+            color: #dc3545;
+            margin-top: 4px;
+            display: none;
+        }
+
+        .form-error.visible {
+            display: block;
+        }
+
+        /* 라디오 버튼 그룹 */
+        .radio-group {
+            display: flex;
+            gap: 24px;
+        }
+
+        .radio-option {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            cursor: pointer;
+        }
+
+        .radio-option input[type="radio"] {
+            width: 18px;
+            height: 18px;
+            cursor: pointer;
+        }
+
+        /* 동적 폼 영역 */
+        .credentials-section {
+            border: 1px solid #e0e0e0;
+            border-radius: 4px;
+            padding: 20px;
+            margin-top: 20px;
+            background: #fafafa;
+        }
+
+        .credentials-section h4 {
+            font-size: 14px;
+            font-weight: 600;
+            margin-bottom: 16px;
+            color: #333;
+        }
+
+        .credentials-cloudmsg,
+        .credentials-sendtalk {
+            display: none;
+        }
+
+        .credentials-cloudmsg.active,
+        .credentials-sendtalk.active {
+            display: block;
+        }
+
+        /* 마스킹된 값 표시 */
+        .masked-value {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+        }
+
+        .masked-value span {
+            font-family: monospace;
+            background: #f0f0f0;
+            padding: 8px 12px;
+            border-radius: 4px;
+            flex: 1;
+        }
+
+        /* 연결 테스트 결과 */
+        .test-result {
+            margin-top: 16px;
+            padding: 12px 16px;
+            border-radius: 4px;
+            display: none;
+        }
+
+        .test-result.visible {
+            display: block;
+        }
+
+        .test-result.success {
+            background: #d4edda;
+            color: #155724;
+            border: 1px solid #c3e6cb;
+        }
+
+        .test-result.error {
+            background: #f8d7da;
+            color: #721c24;
+            border: 1px solid #f5c6cb;
+        }
+
+        .test-result.loading {
+            background: #e2e3e5;
+            color: #383d41;
+            border: 1px solid #d6d8db;
+        }
+
+        /* 버튼 그룹 */
+        .button-group {
+            display: flex;
+            gap: 12px;
+            margin-top: 24px;
+            padding-top: 24px;
+            border-top: 1px solid #eee;
+        }
+
+        .button-group-right {
+            margin-left: auto;
+            display: flex;
+            gap: 12px;
+        }
+
+        /* 모달 */
+        .modal-overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.5);
+            display: none;
+            justify-content: center;
+            align-items: center;
+            z-index: 1000;
+        }
+
+        .modal-overlay.visible {
+            display: flex;
+        }
+
+        .modal {
+            background: #fff;
+            border-radius: 8px;
+            width: 100%;
+            max-width: 480px;
+            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.15);
+        }
+
+        .modal-header {
+            padding: 20px 24px;
+            border-bottom: 1px solid #eee;
+        }
+
+        .modal-header h3 {
+            font-size: 18px;
+            font-weight: 600;
+        }
+
+        .modal-body {
+            padding: 24px;
+        }
+
+        .modal-body p {
+            margin-bottom: 16px;
+        }
+
+        .modal-footer {
+            padding: 16px 24px;
+            border-top: 1px solid #eee;
+            display: flex;
+            justify-content: flex-end;
+            gap: 12px;
+        }
+
+        .change-summary {
+            background: #f8f9fa;
+            padding: 12px 16px;
+            border-radius: 4px;
+            margin: 16px 0;
+        }
+
+        .change-summary .from {
+            color: #666;
+        }
+
+        .change-summary .arrow {
+            margin: 0 8px;
+            color: #999;
+        }
+
+        .change-summary .to {
+            font-weight: 600;
+            color: #333;
+        }
+
+        .warning-text {
+            color: #856404;
+            background: #fff3cd;
+            padding: 12px;
+            border-radius: 4px;
+            font-size: 14px;
+        }
+
+        /* 변경 이력 */
+        .history-section {
+            margin-top: 24px;
+            padding-top: 24px;
+            border-top: 1px solid #eee;
+        }
+
+        .history-section h4 {
+            font-size: 14px;
+            font-weight: 600;
+            margin-bottom: 12px;
+            color: #666;
+        }
+
+        .history-item {
+            font-size: 13px;
+            color: #666;
+            padding: 8px 0;
+            border-bottom: 1px solid #f0f0f0;
+        }
+
+        .history-item:last-child {
+            border-bottom: none;
+        }
+
+        .history-time {
+            color: #999;
+        }
+
+        /* 로딩 스피너 */
+        .spinner {
+            display: inline-block;
+            width: 16px;
+            height: 16px;
+            border: 2px solid #f3f3f3;
+            border-top: 2px solid #4a90d9;
+            border-radius: 50%;
+            animation: spin 1s linear infinite;
+            margin-right: 8px;
+        }
+
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+    </style>
+</head>
+<body>
+    <header>
+        <h1>메시지 업체 설정</h1>
+        <div class="breadcrumb">
+            <a href="#">관리자</a> / <a href="#">시스템 설정</a> / 메시지 업체 설정
+        </div>
+    </header>
+
+    <div class="container">
+        <!-- 1단계: 조직 목록 -->
+        <div class="org-list-section" id="orgListSection">
+            <div class="section-header">
+                <h2 class="section-title">조직 목록</h2>
+                <div class="search-box">
+                    <input type="text" placeholder="조직명 또는 조직 ID로 검색" id="searchInput">
+                    <button class="btn btn-secondary" onclick="searchOrganizations()">검색</button>
+                </div>
+            </div>
+            <table>
+                <thead>
+                    <tr>
+                        <th>조직 ID</th>
+                        <th>조직명</th>
+                        <th>현재 업체</th>
+                        <th>설정 상태</th>
+                        <th>최종 수정일</th>
+                        <th>작업</th>
+                    </tr>
+                </thead>
+                <tbody id="orgTableBody">
+                    <tr>
+                        <td>ORG-001</td>
+                        <td>테크스타트업</td>
+                        <td><span class="provider-badge provider-cloudmsg">CloudMsg</span></td>
+                        <td><span class="status-badge status-configured">설정됨</span></td>
+                        <td>2025-02-01</td>
+                        <td><a class="action-link" onclick="openConfigSection('ORG-001', '테크스타트업', 'cloudmsg')">설정</a></td>
+                    </tr>
+                    <tr>
+                        <td>ORG-002</td>
+                        <td>글로벌커머스</td>
+                        <td><span class="provider-badge provider-sendtalk">SendTalk</span></td>
+                        <td><span class="status-badge status-configured">설정됨</span></td>
+                        <td>2025-01-28</td>
+                        <td><a class="action-link" onclick="openConfigSection('ORG-002', '글로벌커머스', 'sendtalk')">설정</a></td>
+                    </tr>
+                    <tr>
+                        <td>ORG-003</td>
+                        <td>헬스케어솔루션</td>
+                        <td><span class="provider-badge provider-cloudmsg">CloudMsg</span></td>
+                        <td><span class="status-badge status-default">기본값 사용</span></td>
+                        <td>-</td>
+                        <td><a class="action-link" onclick="openConfigSection('ORG-003', '헬스케어솔루션', null)">설정</a></td>
+                    </tr>
+                    <tr>
+                        <td>ORG-004</td>
+                        <td>에듀테크랩</td>
+                        <td><span class="provider-badge provider-cloudmsg">CloudMsg</span></td>
+                        <td><span class="status-badge status-default">기본값 사용</span></td>
+                        <td>-</td>
+                        <td><a class="action-link" onclick="openConfigSection('ORG-004', '에듀테크랩', null)">설정</a></td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+
+        <!-- 2~4단계: 설정 폼 -->
+        <div class="config-section" id="configSection">
+            <div class="section-header">
+                <h2 class="section-title">메시지 업체 설정</h2>
+                <button class="btn btn-secondary" onclick="closeConfigSection()">← 목록으로</button>
+            </div>
+
+            <div class="org-info">
+                <h3 id="selectedOrgName">테크스타트업</h3>
+                <p>조직 ID: <span id="selectedOrgId">ORG-001</span></p>
+            </div>
+
+            <!-- 2단계: 업체 선택 -->
+            <div class="form-group">
+                <label>메시지 발송 업체 <span class="required">*</span></label>
+                <div class="radio-group">
+                    <label class="radio-option">
+                        <input type="radio" name="provider" value="cloudmsg" onchange="onProviderChange('cloudmsg')">
+                        CloudMsg (클라우드메시지)
+                    </label>
+                    <label class="radio-option">
+                        <input type="radio" name="provider" value="sendtalk" onchange="onProviderChange('sendtalk')">
+                        SendTalk (센드톡)
+                    </label>
+                </div>
+                <p class="form-hint">선택한 업체를 통해 해당 조직의 모든 메시지(SMS, MMS, 알림톡)가 발송됩니다.</p>
+            </div>
+
+            <!-- 3단계: 인증 정보 입력 -->
+            <div class="credentials-section" id="credentialsSection">
+                <!-- CloudMsg 인증 정보 -->
+                <div class="credentials-cloudmsg" id="cloudmsgCredentials">
+                    <h4>CloudMsg 인증 정보</h4>
+                    
+                    <div class="form-group">
+                        <label>Access Key <span class="required">*</span></label>
+                        <input type="text" class="form-control" id="cloudmsgAccessKey" 
+                               placeholder="AKCLOUDMSG로 시작하는 20자">
+                        <p class="form-hint">CloudMsg 콘솔에서 발급받은 Access Key를 입력하세요.</p>
+                        <p class="form-error" id="cloudmsgAccessKeyError">Access Key 형식이 올바르지 않습니다. AKCLOUDMSG로 시작하는 20자여야 합니다.</p>
+                    </div>
+
+                    <div class="form-group">
+                        <label>Secret Key <span class="required">*</span></label>
+                        <input type="password" class="form-control" id="cloudmsgSecretKey" 
+                               placeholder="Secret Key 입력">
+                        <p class="form-hint">HMAC 서명 생성에 사용되는 Secret Key입니다.</p>
+                        <p class="form-error" id="cloudmsgSecretKeyError">Secret Key를 입력해주세요.</p>
+                    </div>
+
+                    <div class="form-group">
+                        <label>알림톡 발신 프로필 ID</label>
+                        <input type="text" class="form-control" id="cloudmsgProfileId" 
+                               placeholder="카카오 비즈니스 채널 프로필 ID (선택)">
+                        <p class="form-hint">알림톡 발송 시 사용할 카카오 비즈니스 채널 프로필 ID입니다. 알림톡을 사용하지 않는 경우 비워두세요.</p>
+                    </div>
+                </div>
+
+                <!-- SendTalk 인증 정보 -->
+                <div class="credentials-sendtalk" id="sendtalkCredentials">
+                    <h4>SendTalk 인증 정보</h4>
+                    
+                    <div class="form-group">
+                        <label>API Key <span class="required">*</span></label>
+                        <input type="text" class="form-control" id="sendtalkApiKey" 
+                               placeholder="API Key 입력">
+                        <p class="form-hint">SendTalk 대시보드에서 발급받은 API Key를 입력하세요.</p>
+                        <p class="form-error" id="sendtalkApiKeyError">API Key를 입력해주세요.</p>
+                    </div>
+
+                    <div class="form-group">
+                        <label>Secret Key <span class="required">*</span></label>
+                        <input type="password" class="form-control" id="sendtalkSecretKey" 
+                               placeholder="Webhook 검증용 Secret Key">
+                        <p class="form-hint">Webhook 서명 검증에 사용되는 Secret Key입니다.</p>
+                        <p class="form-error" id="sendtalkSecretKeyError">Secret Key를 입력해주세요.</p>
+                    </div>
+                </div>
+
+                <!-- 4단계: 연결 테스트 -->
+                <div class="form-group">
+                    <button class="btn btn-secondary" id="testConnectionBtn" onclick="testConnection()" disabled>
+                        연결 테스트
+                    </button>
+                    <span class="form-hint" style="margin-left: 12px;">저장 전 연결 테스트가 필요합니다.</span>
+                </div>
+
+                <div class="test-result" id="testResult">
+                    <span id="testResultMessage"></span>
+                </div>
+            </div>
+
+            <!-- 버튼 그룹 -->
+            <div class="button-group">
+                <button class="btn btn-danger" id="deleteBtn" onclick="openDeleteModal()" style="display: none;">
+                    설정 삭제
+                </button>
+                <div class="button-group-right">
+                    <button class="btn btn-secondary" onclick="closeConfigSection()">취소</button>
+                    <button class="btn btn-primary" id="saveBtn" onclick="openSaveModal()" disabled>
+                        저장
+                    </button>
+                </div>
+            </div>
+
+            <!-- 변경 이력 -->
+            <div class="history-section" id="historySection" style="display: none;">
+                <h4>변경 이력</h4>
+                <div class="history-item">
+                    <span class="history-time">2025-02-01 14:32</span> - 
+                    admin@company.com: CloudMsg로 변경 (이전: 기본값)
+                </div>
+                <div class="history-item">
+                    <span class="history-time">2025-01-15 09:15</span> - 
+                    manager@company.com: 최초 설정
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- 저장 확인 모달 -->
+    <div class="modal-overlay" id="saveModal">
+        <div class="modal">
+            <div class="modal-header">
+                <h3>설정 변경 확인</h3>
+            </div>
+            <div class="modal-body">
+                <p>다음과 같이 메시지 업체 설정을 변경합니다.</p>
+                <div class="change-summary">
+                    <span class="from" id="modalFromProvider">기본값 (CloudMsg)</span>
+                    <span class="arrow">→</span>
+                    <span class="to" id="modalToProvider">SendTalk</span>
+                </div>
+                <div class="warning-text">
+                    ⚠️ 변경 즉시 해당 조직의 모든 메시지가 새 업체를 통해 발송됩니다.
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button class="btn btn-secondary" onclick="closeSaveModal()">취소</button>
+                <button class="btn btn-primary" onclick="saveConfig()">확인</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- 삭제 확인 모달 -->
+    <div class="modal-overlay" id="deleteModal">
+        <div class="modal">
+            <div class="modal-header">
+                <h3>설정 삭제 확인</h3>
+            </div>
+            <div class="modal-body">
+                <p>이 조직의 메시지 업체 설정을 삭제하시겠습니까?</p>
+                <p>삭제 후에는 기본값(CloudMsg)이 적용됩니다.</p>
+                <div class="form-group" style="margin-top: 16px;">
+                    <label>확인을 위해 조직명을 입력하세요</label>
+                    <input type="text" class="form-control" id="deleteConfirmInput" 
+                           placeholder="조직명 입력">
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button class="btn btn-secondary" onclick="closeDeleteModal()">취소</button>
+                <button class="btn btn-danger" id="confirmDeleteBtn" onclick="deleteConfig()" disabled>삭제</button>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // 상태 관리
+        let currentOrg = null;
+        let currentProvider = null;
+        let originalProvider = null;
+        let testPassed = false;
+
+        // 조직 설정 화면 열기
+        function openConfigSection(orgId, orgName, provider) {
+            currentOrg = { id: orgId, name: orgName };
+            originalProvider = provider;
+            currentProvider = provider;
+            testPassed = false;
+
+            document.getElementById('orgListSection').style.display = 'none';
+            document.getElementById('configSection').classList.add('active');
+            document.getElementById('selectedOrgId').textContent = orgId;
+            document.getElementById('selectedOrgName').textContent = orgName;
+
+            // 라디오 버튼 초기화
+            document.querySelectorAll('input[name="provider"]').forEach(radio => {
+                radio.checked = radio.value === provider;
+            });
+
+            // 인증 정보 폼 표시
+            if (provider) {
+                onProviderChange(provider);
+                document.getElementById('deleteBtn').style.display = 'block';
+                document.getElementById('historySection').style.display = 'block';
+            } else {
+                document.getElementById('credentialsSection').style.display = 'none';
+                document.getElementById('deleteBtn').style.display = 'none';
+                document.getElementById('historySection').style.display = 'none';
+            }
+
+            updateSaveButton();
+        }
+
+        // 목록으로 돌아가기
+        function closeConfigSection() {
+            document.getElementById('configSection').classList.remove('active');
+            document.getElementById('orgListSection').style.display = 'block';
+            resetForm();
+        }
+
+        // 업체 선택 변경
+        function onProviderChange(provider) {
+            currentProvider = provider;
+            testPassed = false;
+
+            document.getElementById('credentialsSection').style.display = 'block';
+            document.getElementById('cloudmsgCredentials').classList.remove('active');
+            document.getElementById('sendtalkCredentials').classList.remove('active');
+
+            if (provider === 'cloudmsg') {
+                document.getElementById('cloudmsgCredentials').classList.add('active');
+            } else if (provider === 'sendtalk') {
+                document.getElementById('sendtalkCredentials').classList.add('active');
+            }
+
+            // 테스트 결과 초기화
+            document.getElementById('testResult').classList.remove('visible');
+            updateTestButton();
+            updateSaveButton();
+        }
+
+        // 입력값 검증
+        function validateInputs() {
+            let isValid = true;
+
+            if (currentProvider === 'cloudmsg') {
+                const accessKey = document.getElementById('cloudmsgAccessKey').value;
+                const secretKey = document.getElementById('cloudmsgSecretKey').value;
+
+                if (!accessKey || !accessKey.startsWith('AKCLOUDMSG') || accessKey.length !== 20) {
+                    document.getElementById('cloudmsgAccessKeyError').classList.add('visible');
+                    document.getElementById('cloudmsgAccessKey').classList.add('error');
+                    isValid = false;
+                } else {
+                    document.getElementById('cloudmsgAccessKeyError').classList.remove('visible');
+                    document.getElementById('cloudmsgAccessKey').classList.remove('error');
+                }
+
+                if (!secretKey) {
+                    document.getElementById('cloudmsgSecretKeyError').classList.add('visible');
+                    document.getElementById('cloudmsgSecretKey').classList.add('error');
+                    isValid = false;
+                } else {
+                    document.getElementById('cloudmsgSecretKeyError').classList.remove('visible');
+                    document.getElementById('cloudmsgSecretKey').classList.remove('error');
+                }
+            } else if (currentProvider === 'sendtalk') {
+                const apiKey = document.getElementById('sendtalkApiKey').value;
+                const secretKey = document.getElementById('sendtalkSecretKey').value;
+
+                if (!apiKey) {
+                    document.getElementById('sendtalkApiKeyError').classList.add('visible');
+                    document.getElementById('sendtalkApiKey').classList.add('error');
+                    isValid = false;
+                } else {
+                    document.getElementById('sendtalkApiKeyError').classList.remove('visible');
+                    document.getElementById('sendtalkApiKey').classList.remove('error');
+                }
+
+                if (!secretKey) {
+                    document.getElementById('sendtalkSecretKeyError').classList.add('visible');
+                    document.getElementById('sendtalkSecretKey').classList.add('error');
+                    isValid = false;
+                } else {
+                    document.getElementById('sendtalkSecretKeyError').classList.remove('visible');
+                    document.getElementById('sendtalkSecretKey').classList.remove('error');
+                }
+            }
+
+            return isValid;
+        }
+
+        // 테스트 버튼 상태 업데이트
+        function updateTestButton() {
+            const btn = document.getElementById('testConnectionBtn');
+            let hasRequiredFields = false;
+
+            if (currentProvider === 'cloudmsg') {
+                const accessKey = document.getElementById('cloudmsgAccessKey').value;
+                const secretKey = document.getElementById('cloudmsgSecretKey').value;
+                hasRequiredFields = accessKey && secretKey;
+            } else if (currentProvider === 'sendtalk') {
+                const apiKey = document.getElementById('sendtalkApiKey').value;
+                const secretKey = document.getElementById('sendtalkSecretKey').value;
+                hasRequiredFields = apiKey && secretKey;
+            }
+
+            btn.disabled = !hasRequiredFields;
+        }
+
+        // 저장 버튼 상태 업데이트
+        function updateSaveButton() {
+            document.getElementById('saveBtn').disabled = !testPassed;
+        }
+
+        // 연결 테스트
+        function testConnection() {
+            if (!validateInputs()) {
+                return;
+            }
+
+            const resultDiv = document.getElementById('testResult');
+            const resultMsg = document.getElementById('testResultMessage');
+            const btn = document.getElementById('testConnectionBtn');
+
+            // 로딩 상태
+            resultDiv.className = 'test-result visible loading';
+            resultMsg.innerHTML = '<span class="spinner"></span>연결 테스트 중...';
+            btn.disabled = true;
+
+            // 시뮬레이션 (실제로는 API 호출)
+            setTimeout(() => {
+                // 성공 시뮬레이션 (80% 확률)
+                if (Math.random() > 0.2) {
+                    resultDiv.className = 'test-result visible success';
+                    resultMsg.textContent = '✓ 연결 테스트 성공: 인증 정보가 유효합니다.';
+                    testPassed = true;
+                } else {
+                    resultDiv.className = 'test-result visible error';
+                    resultMsg.textContent = '✕ 연결 테스트 실패: 입력한 인증 정보가 올바르지 않습니다. Access Key와 Secret Key를 다시 확인해주세요.';
+                    testPassed = false;
+                }
+                btn.disabled = false;
+                updateSaveButton();
+            }, 1500);
+        }
+
+        // 저장 모달 열기
+        function openSaveModal() {
+            const fromProvider = originalProvider ? 
+                (originalProvider === 'cloudmsg' ? 'CloudMsg' : 'SendTalk') : 
+                '기본값 (CloudMsg)';
+            const toProvider = currentProvider === 'cloudmsg' ? 'CloudMsg' : 'SendTalk';
+
+            document.getElementById('modalFromProvider').textContent = fromProvider;
+            document.getElementById('modalToProvider').textContent = toProvider;
+            document.getElementById('saveModal').classList.add('visible');
+        }
+
+        function closeSaveModal() {
+            document.getElementById('saveModal').classList.remove('visible');
+        }
+
+        // 저장 실행
+        function saveConfig() {
+            closeSaveModal();
+            alert('설정이 저장되었습니다.');
+            closeConfigSection();
+        }
+
+        // 삭제 모달 열기
+        function openDeleteModal() {
+            document.getElementById('deleteConfirmInput').value = '';
+            document.getElementById('confirmDeleteBtn').disabled = true;
+            document.getElementById('deleteModal').classList.add('visible');
+        }
+
+        function closeDeleteModal() {
+            document.getElementById('deleteModal').classList.remove('visible');
+        }
+
+        // 삭제 확인 입력 검증
+        document.getElementById('deleteConfirmInput')?.addEventListener('input', function() {
+            const isMatch = this.value === currentOrg?.name;
+            document.getElementById('confirmDeleteBtn').disabled = !isMatch;
+        });
+
+        // 삭제 실행
+        function deleteConfig() {
+            closeDeleteModal();
+            alert('설정이 삭제되었습니다. 기본값(CloudMsg)이 적용됩니다.');
+            closeConfigSection();
+        }
+
+        // 폼 초기화
+        function resetForm() {
+            currentOrg = null;
+            currentProvider = null;
+            originalProvider = null;
+            testPassed = false;
+
+            document.querySelectorAll('input[name="provider"]').forEach(radio => radio.checked = false);
+            document.querySelectorAll('.form-control').forEach(input => {
+                input.value = '';
+                input.classList.remove('error');
+            });
+            document.querySelectorAll('.form-error').forEach(el => el.classList.remove('visible'));
+            document.getElementById('testResult').classList.remove('visible');
+            document.getElementById('credentialsSection').style.display = 'none';
+        }
+
+        // 검색
+        function searchOrganizations() {
+            const query = document.getElementById('searchInput').value.toLowerCase();
+            const rows = document.querySelectorAll('#orgTableBody tr');
+            
+            rows.forEach(row => {
+                const text = row.textContent.toLowerCase();
+                row.style.display = text.includes(query) ? '' : 'none';
+            });
+        }
+
+        // 입력 이벤트 리스너
+        document.querySelectorAll('.form-control').forEach(input => {
+            input.addEventListener('input', updateTestButton);
+        });
+    </script>
+</body>
+</html>
