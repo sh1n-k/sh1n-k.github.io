@@ -23,6 +23,9 @@ description: "CloudMsg/SendTalk 멀티 프로바이더 설계 + 관리자 화면
 - 설계 개요를 빠르게 파악: **[문제 분석](./problem-analysis)**
 - 구현 관점 핵심: **[서버 설계 및 작업 계획](./server-design)**
 - 운영 관점 핵심: **[관리자 화면 설계](./admin-ui-design)**
+- 샘플 관리자 화면: <a href="{{ site.baseurl }}/sample-ui.html" target="_blank" rel="noopener noreferrer">
+  샘플 UI 보기 (HTML)
+</a>
 
 ## **전체 목차**
 
