@@ -1,5 +1,5 @@
 ---
-layout: default
+layout: page
 title: 과제 정리 - LLM 협업 기반 설계
 description: 메시지 발송 업체(CloudMsg/SendTalk) 멀티 프로바이더 전환 설계 및 관리자 화면 설계, 그리고 LLM 활용 방법론 기록
 ---
