@@ -1,6 +1,7 @@
 title: "사전 프로젝트 정리 - LLM 협업 기반 설계"
 description: "CloudMsg/SendTalk 멀티 프로바이더 설계 + 관리자 화면 설계 + LLM 활용 방법론"
-theme: just-the-docs
+# theme: just-the-docs
+remote_theme: just-the-docs/just-the-docs
 
 url: ""
 baseurl: ""
