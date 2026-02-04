@@ -1,3 +1,20 @@
-theme: jekyll-theme-minimal
-title: Shin
-description: SLK 사전 프로젝트의 내용을 정리
+title: "사전 프로젝트 정리 - LLM 협업 기반 설계"
+description: "CloudMsg/SendTalk 멀티 프로바이더 설계 + 관리자 화면 설계 + LLM 활용 방법론"
+theme: just-the-docs
+
+url: ""
+baseurl: ""
+
+# 검색(문서 내 검색)
+search_enabled: true
+
+# 좌측 네비게이션(Just the Docs 기본)
+nav_sort: case_sensitive
+heading_anchors: true
+
+# 풋터(선택)
+footer_content: "© 2026. 사전 프로젝트 정리 문서."
+
+# Mermaid 다이어그램 쓰고 싶으면(선택)
+# mermaid:
+#   version: "10.6.1"
