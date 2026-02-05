@@ -14,7 +14,7 @@ nav_sort: case_sensitive
 heading_anchors: true
 
 # 풋터(선택)
-footer_content: "© 2026. 사전 프로젝트 정리 문서."
+footer_content: "© 2026. 사전 프로젝트 정리 문서. 김신."
 
 # Mermaid 다이어그램 쓰고 싶으면(선택)
 # mermaid:
