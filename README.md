@@ -1,5 +1,10 @@
 # sh1n-k.github.io
 
+![Markdown](https://img.shields.io/badge/Markdown-docs-000000?logo=markdown&logoColor=white)
+![GitHub Pages](https://img.shields.io/badge/GitHub%20Pages-site-222222?logo=githubpages&logoColor=white)
+![HTML](https://img.shields.io/badge/HTML-structure-E34F26?logo=html5&logoColor=white)
+
+
 **CloudMsg/SendTalk 멀티 프로바이더 설계 + 관리자 화면 설계 + LLM 활용 방법론**을 정리한 문서 저장소입니다.
 
 ## **빠른 이동**
